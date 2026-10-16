@@ -27,25 +27,9 @@
   </style>
 </noscript>
 
-<style>
-  /* Solo el fondo funde. El texto NO lleva transición alguna: ni fade,
-     ni opacidad, ni transform. */
-  .splash-screen {
-    transition: background-color 0.5s ease;
-  }
-  .splash-screen.is-leaving {
-    background-color: transparent;
-    pointer-events: none;
-  }
-  /* Retirada instantánea del texto (sin transición): ocurre cuando el
-     titular del Hero ya es opaco, sobre los mismos píxeles. */
-  .splash-screen.is-gone .splash-lockup {
-    visibility: hidden;
-  }
-  .splash-screen.is-hidden {
-    display: none;
-  }
-</style>
+<!-- Los estados del overlay (base, .is-leaving, .splash-hidden) viven en el
+  <style is:inline> del <head> (selectores ID, misma especificidad en todas
+  las fases y cobertura desde el fotograma 0). Aquí solo maquetación. -->
 
 <script>
   (function () {
@@ -66,13 +50,16 @@
       // El titular del Hero es opaco a los ~800ms (delay 200ms + 600ms).
       document.documentElement.classList.add('is-revealed');
       splash.classList.add('is-leaving');
+      // Fase 2 a los 850ms: el titular ya es opaco y ocupa los mismos
+      // píxeles, así que el fundido del contenedor es invisible (sin hueco).
       setTimeout(function () {
-        splash.classList.add('is-gone'); // swap invisible, texto siempre presente
-      }, 850);
-      setTimeout(function () {
-        splash.classList.add('is-hidden');
+        splash.classList.add('splash-hidden');
         document.body.classList.remove('splash-active'); // rehabilita el scroll
-      }, 900);
+        // Remover del DOM tras la transición (0.5s)
+        setTimeout(function () {
+          splash.style.display = 'none';
+        }, 550);
+      }, 850);
     }
 
     document.body.classList.add('splash-active');

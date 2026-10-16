@@ -19,6 +19,52 @@ const { title = "code'm up // DEV_WORKSPACE — CARLOS ALVARO" } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
       rel="stylesheet"
     />
+    <!-- CSS crítico inline: bloquea el FOUC antes de que llegue el CSS de
+      Tailwind. El splash cubre opacamente el contenido desde el fotograma 0
+      y sale mediante la clase de estado .splash-hidden (sin !important en
+      display/opacity/visibility del estado base, para no bloquear la salida).
+      Incluye la variante obsidian para no destellar en claro a los usuarios
+      con tema oscuro guardado. -->
+    <style is:inline>
+      /* Evita el destello de fondo blanco/crudo */
+      html, body {
+        background-color: #F8F9FA;
+        margin: 0;
+        padding: 0;
+      }
+      html.obsidian-mode, html.obsidian-mode body {
+        background-color: #0D0D0D;
+      }
+      /* Estado inicial inmediato anti-FOUC */
+      #splash-screen {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #F8F9FA;
+        transition: opacity 0.5s ease, visibility 0.5s ease, background-color 0.5s ease;
+      }
+      html.obsidian-mode #splash-screen {
+        background-color: #0D0D0D;
+      }
+
+      /* Fase 1 de salida: solo funde el fondo (el texto no lleva transición) */
+      #splash-screen.is-leaving {
+        background-color: transparent;
+        pointer-events: none;
+      }
+
+      /* Estado oculto cuando termina la animación */
+      #splash-screen.splash-hidden {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    </style>
     <!-- Aplicación temprana del tema guardado (evita el parpadeo al cargar) -->
     <script is:inline>
       (function () {
