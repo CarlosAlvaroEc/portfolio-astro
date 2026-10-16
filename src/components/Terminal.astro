@@ -1,0 +1,102 @@
+---
+// Terminal.astro — ventana de terminal oscura con canales directos y
+// formulario de contacto interactivo.
+---
+
+<section id="terminal" class="mt-4">
+  <div data-reveal="rise" style="--reveal-delay:750ms" class="flex flex-wrap items-end justify-between gap-2.5 border-b border-line px-0 pb-4 pt-8">
+    <div>
+      <span data-scramble class="mb-2 block font-mono text-xs font-medium uppercase tracking-wider text-meta">// Sección 03 — Canales directos</span>
+      <h2 data-scramble class="font-sans text-3xl font-bold tracking-[-0.04em] text-ink">Terminal de contacto</h2>
+    </div>
+    <div class="font-mono text-xs uppercase text-meta">Ubicación: Guano - Riobamba / Ecuador</div>
+  </div>
+
+  <div class="mt-6 border border-line bg-surface">
+    <div class="flex items-center justify-between border-b border-line bg-canvas px-4 py-2.5 font-mono text-xs uppercase text-meta">
+      <div class="flex gap-1.5">
+        <span class="h-2 w-2 rounded-full bg-signal"></span>
+        <span class="h-2 w-2 rounded-full bg-line"></span>
+        <span class="h-2 w-2 rounded-full bg-line"></span>
+      </div>
+      <div class="font-medium">carlos@fedora-laptop:~/contacto</div>
+      <div>Fedora Linux // Bash</div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 bg-[#101214] p-6 lg:grid-cols-2">
+      <div class="font-mono text-xs leading-relaxed text-[#94a3b8]">
+        <p><span class="font-bold text-white">carlos@fedora-laptop:~$</span> <span class="text-white">cat ./canales_contacto.txt</span></p>
+        <p class="mb-4 text-signal">● Estado: Canal de transmisión activo [100%]</p>
+        <p class="mb-4">
+          Para solicitudes de proyectos, consultoría de software o vinculación profesional, haga clic en cualquiera de los enlaces verificados a continuación o envíe un mensaje directo mediante el formulario.
+        </p>
+        <div class="mt-4 border-t border-[#334155] pt-4">
+          <p class="mb-2">
+            <strong class="text-white">[1] CORREO ELECTRÓNICO:</strong><br />
+            <a href="mailto:carlos.alvaro.ant55@gmail.com" class="font-medium text-[#38bdf8] underline transition-colors hover:text-white">carlos.alvaro.ant55@gmail.com</a> / <a href="mailto:carlos.alvaro@espoch.edu.ec" class="font-medium text-[#38bdf8] underline transition-colors hover:text-white">carlos.alvaro@espoch.edu.ec</a>
+          </p>
+          <p class="mb-2">
+            <strong class="text-white">[2] CÓDIGO FUENTE &amp; GITHUB:</strong><br />
+            <a href="https://github.com/CarlosAlvaroEc" target="_blank" rel="noopener noreferrer" class="font-medium text-[#38bdf8] underline transition-colors hover:text-white">github.com/CarlosAlvaroEc</a>
+          </p>
+          <p class="mb-2">
+            <strong class="text-white">[3] PERFIL PROFESIONAL &amp; LINKEDIN:</strong><br />
+            <a href="https://www.linkedin.com/in/carlos-alvaro-ec/" target="_blank" rel="noopener noreferrer" class="font-medium text-[#38bdf8] underline transition-colors hover:text-white">linkedin.com/in/carlos-alvaro-ec/</a>
+          </p>
+          <p class="mt-3">INSTITUCIÓN: ESPOCH (Escuela Superior Politécnica de Chimborazo)</p>
+        </div>
+      </div>
+
+      <form class="flex flex-col gap-3.5" id="contactForm">
+        <div class="flex flex-col gap-1.5">
+          <label for="senderName" class="font-mono text-xs uppercase text-[#94a3b8]">Nombre_remitente [requerido]:</label>
+          <input type="text" id="senderName" required placeholder="Ej: Ing. María Pérez / Entidad" class="rounded-sm border border-[#334155] bg-[#1a1d21] px-3 py-2.5 font-mono text-xs text-white outline-none transition-colors focus:border-signal" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="senderEmail" class="font-mono text-xs uppercase text-[#94a3b8]">Correo_electrónico [requerido]:</label>
+          <input type="email" id="senderEmail" required placeholder="contacto@empresa.com" class="rounded-sm border border-[#334155] bg-[#1a1d21] px-3 py-2.5 font-mono text-xs text-white outline-none transition-colors focus:border-signal" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="transmissionMessage" class="font-mono text-xs uppercase text-[#94a3b8]">Mensaje_o_consulta [requerido]:</label>
+          <textarea id="transmissionMessage" required placeholder="Escriba aquí los detalles de la consulta, proyecto o propuesta..." class="min-h-[90px] resize-y rounded-sm border border-[#334155] bg-[#1a1d21] px-3 py-2.5 font-mono text-xs text-white outline-none transition-colors focus:border-signal"></textarea>
+        </div>
+        <button type="submit" class="self-start rounded-sm border border-signal bg-signal px-3 py-3 font-mono text-xs font-bold uppercase tracking-widest text-black transition hover:brightness-110">
+          [ Transmitir mensaje ]
+        </button>
+        <div id="consoleLog" class="hidden border border-line border-l-2 border-l-signal bg-black p-2.5 px-3 font-mono text-xs text-ink">
+          [OK] MENSAJE ENVIADO CORRECTAMENTE A CARLOS ALVARO.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Formulario de contacto con simulación de transmisión
+  (function () {
+    var form = document.getElementById('contactForm');
+    if (!form) return;
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var consoleLog = document.getElementById('consoleLog');
+      var btn = form.querySelector('button');
+      if (btn) {
+        btn.textContent = '[ TRANSMITIENDO... ]';
+        btn.style.opacity = '0.7';
+      }
+      setTimeout(function () {
+        if (btn) {
+          btn.textContent = '[ MENSAJE ENVIADO ]';
+          btn.style.opacity = '1';
+        }
+        if (consoleLog) consoleLog.classList.remove('hidden');
+        form.reset();
+      }, 1000);
+    });
+  })();
+</script>
+
+<script>
+  import { initScramble } from '../utils/scramble';
+  initScramble();
+</script>

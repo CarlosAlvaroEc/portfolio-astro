@@ -1,0 +1,129 @@
+---
+// Header.astro — barra técnica única, delgada y compacta: coordenadas /
+// versión a la izquierda; estado operacional + conmutador de tema a la derecha.
+---
+
+<header class="border-b border-line bg-canvas">
+  <div data-reveal="rise" style="--reveal-delay:0ms" class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 font-mono text-xs font-medium uppercase tracking-wider text-meta">
+    <span>EC-2026 // v1.0</span>
+    <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span class="flex items-center gap-2 whitespace-nowrap">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-signal"></span>
+        OPERACIONAL [100%]
+      </span>
+      <button id="themeToggleBtn" class="btn-theme-toggle whitespace-nowrap border border-line bg-transparent px-2.5 py-1 font-mono text-xs font-medium uppercase tracking-wider text-meta transition-colors hover:border-signal hover:text-ink" type="button" aria-label="Cambiar modo de plano">
+        <span class="theme-icon mr-0.5 text-signal">[■]</span> <span id="themeToggleLabel">MODO: SUIZO CLARO</span>
+      </button>
+    </span>
+  </div>
+</header>
+
+<style>
+  .btn-theme-toggle:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  // Conmutador de tema: Suizo Claro (default) <-> Obsidian (circular reveal)
+  (function () {
+    var STORAGE_KEY = 'theme_preference';
+    var btn = document.getElementById('themeToggleBtn');
+    if (!btn) return;
+    var label = document.getElementById('themeToggleLabel');
+    var icon = btn.querySelector('.theme-icon');
+
+    var LIGHT = { icon: '[■]', label: 'MODO: SUIZO CLARO' };
+    var DARK = { icon: '[◩]', label: 'MODO: OBSIDIAN' };
+
+    function isObsidian() {
+      return document.documentElement.classList.contains('obsidian-mode');
+    }
+
+    function syncButton() {
+      var dark = isObsidian();
+      if (icon) icon.textContent = dark ? DARK.icon : LIGHT.icon;
+      if (label) label.textContent = dark ? DARK.label : LIGHT.label;
+      btn.setAttribute('aria-pressed', String(dark));
+      btn.setAttribute('aria-label', dark ? 'Cambiar a modo suizo claro' : 'Cambiar a modo obsidian');
+    }
+
+    function persist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, isObsidian() ? 'obsidian' : 'light');
+      } catch (e) {
+        /* localStorage no disponible */
+      }
+    }
+
+    function applyMode() {
+      document.documentElement.classList.toggle('obsidian-mode', !isObsidian());
+      syncButton();
+      persist();
+    }
+
+    function toggleTheme(event) {
+      // Sin View Transitions API: cambio de clase instantáneo, sin parpadeo.
+      if (!document.startViewTransition) {
+        applyMode();
+        return;
+      }
+      // Coordenadas precisas del punto de clic; si el evento no trae
+      // posición (p. ej. activación por teclado), centro del viewport.
+      var x = event.clientX || window.innerWidth / 2;
+      var y = event.clientY || window.innerHeight / 2;
+      var radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+      // Mata las transiciones CSS en vivo ANTES de la captura, para que el
+      // cambio de variables dentro de applyMode sea instantáneo.
+      document.documentElement.classList.add('vt-theme-animating');
+      var cleaned = false;
+      function cleanup() {
+        if (cleaned) return;
+        cleaned = true;
+        document.documentElement.classList.remove('vt-theme-animating');
+      }
+      var transition = document.startViewTransition(applyMode);
+      // El reveal arranca en cuanto el nuevo snapshot está listo: el
+      // pseudo-elemento nunca se pinta completo de antemano.
+      transition.ready.then(function () {
+        var reveal = document.documentElement.animate(
+          {
+            clipPath: [
+              'circle(0px at ' + x + 'px ' + y + 'px)',
+              'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'
+            ]
+          },
+          {
+            duration: 450,
+            easing: 'ease-in-out',
+            pseudoElement: '::view-transition-new(root)'
+          }
+        );
+        reveal.finished.then(cleanup, cleanup);
+      }, cleanup);
+      // Red de seguridad: nunca dejar la supresión puesta más de 1s.
+      setTimeout(cleanup, 1000);
+    }
+
+    btn.addEventListener('click', toggleTheme);
+
+    function restorePreference() {
+      var saved = null;
+      try {
+        saved = localStorage.getItem(STORAGE_KEY);
+      } catch (e) {}
+      document.documentElement.classList.toggle('obsidian-mode', saved === 'obsidian');
+      syncButton();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', restorePreference);
+    } else {
+      restorePreference();
+    }
+  })();
+</script>

@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SplashScreen from '../components/SplashScreen.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import MetaStrip from '../components/MetaStrip.astro';
+import Projects from '../components/Projects.astro';
+import Terminal from '../components/Terminal.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <SplashScreen />
+  <div class="mx-auto max-w-[1380px] border border-line bg-canvas p-6">
+    <!-- Primer pliegue a pantalla completa: Header compacto + Hero expansible -->
+    <div id="fold" class="flex min-h-screen flex-col">
+      <Header />
+      <Hero />
+    </div>
+    <!-- Flujo natural tras el pliegue, accesible con scroll -->
+    <MetaStrip />
+    <Projects />
+    <Terminal />
+    <Footer />
+  </div>
+
+  <script>
+    // Compensación geométrica del pliegue: centra el titular del Hero
+    // exactamente en el 50vh, neutralizando la altura de la cabecera y el
+    // peso visual de la tira técnica. Medición real (no valores fijos),
+    // convergente y recalculada ante cualquier cambio de layout.
+    (function () {
+      var title = document.getElementById('hero-title');
+      var content = document.getElementById('hero-content');
+      var fold = document.getElementById('fold');
+      if (!title || !content || !fold) return;
+      var raf = 0;
+
+      function align() {
+        // En pantallas bajas con desborde, flujo natural sin corrección.
+        if (fold.scrollHeight > window.innerHeight + 1) {
+          content.style.top = '0px';
+          return;
+        }
+        var r = title.getBoundingClientRect();
+        var delta = r.top + r.height / 2 - window.innerHeight / 2;
+        if (Math.abs(delta) < 0.5) return; // ya centrado al subpíxel
+        // `top` relativo: desplazamiento 1:1 sin alterar el layout flex
+        // (con margin-top, justify-center absorbería la mitad del ajuste).
+        var cur = parseFloat(content.style.top) || 0;
+        var next = cur - delta;
+        if (Math.abs(next) > window.innerHeight / 2) return; // salvaguarda
+        content.style.top = next + 'px';
+      }
+
+      function schedule() {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(align);
+      }
+
+      schedule();
+      document.addEventListener('DOMContentLoaded', schedule);
+      window.addEventListener('load', schedule);
+      window.addEventListener('resize', schedule);
+      // Las hojas de Google Fonts pueden llegar tarde: `fonts.ready` a veces
+      // resuelve con la fallback y el swap real ocurre tras `load`, moviendo
+      // el titular unos píxeles sin que nadie re-alinee. `loadingdone` cubre
+      // cada lote de cargas, incluido el swap post-load.
+      if (document.fonts) {
+        document.fonts.ready.then(schedule);
+        if (typeof document.fonts.addEventListener === 'function') {
+          document.fonts.addEventListener('loadingdone', schedule);
+        }
+      }
+      // Cualquier cambio de geometría (swap de fuente, reflow por la
+      // scrollbar al liberar `splash-active`) re-dispara la alineación.
+      if (typeof ResizeObserver === 'function') {
+        var ro = new ResizeObserver(schedule);
+        ro.observe(fold);
+        ro.observe(title);
+      }
+      if (typeof MutationObserver === 'function') {
+        var mo = new MutationObserver(schedule);
+        mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      }
+      // Pulido final: no-op si ya está centrado al subpíxel.
+      setTimeout(schedule, 2000);
+    })();
+  </script>
+</Layout>

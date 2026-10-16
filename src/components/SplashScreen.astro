@@ -1,0 +1,88 @@
+---
+// SplashScreen.astro — overlay fijo a pantalla completa (módulo independiente).
+// El lockup replica 1:1 las clases del titular del Hero para la continuidad
+// visual. Salida: auto a los 1.2s o click / Enter / Espacio / Escape.
+// Solo el FONDO se desvanece; el texto permanece opaco hasta que el titular
+// del Hero ya es totalmente visible, y entonces se retira de golpe (mismos
+// píxeles → swap invisible, sin hueco de opacidad).
+---
+
+<div
+  id="splash-screen"
+  class="splash-screen fixed inset-0 z-[9999] flex h-screen w-screen cursor-pointer items-center justify-center bg-canvas"
+  role="button"
+  tabindex="0"
+  aria-label="Entrar al portafolio"
+>
+  <div class="splash-lockup px-4 text-center font-sans text-5xl font-black lowercase leading-none tracking-tight text-ink md:text-7xl">
+    code<span class="text-signal">'</span>m up
+  </div>
+</div>
+
+<noscript>
+  <style>
+    #splash-screen { display: none !important; }
+    body.splash-active { overflow: auto !important; }
+    [data-reveal] { opacity: 1 !important; translate: 0 0 !important; }
+  </style>
+</noscript>
+
+<style>
+  /* Solo el fondo funde. El texto NO lleva transición alguna: ni fade,
+     ni opacidad, ni transform. */
+  .splash-screen {
+    transition: background-color 0.5s ease;
+  }
+  .splash-screen.is-leaving {
+    background-color: transparent;
+    pointer-events: none;
+  }
+  /* Retirada instantánea del texto (sin transición): ocurre cuando el
+     titular del Hero ya es opaco, sobre los mismos píxeles. */
+  .splash-screen.is-gone .splash-lockup {
+    visibility: hidden;
+  }
+  .splash-screen.is-hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  (function () {
+    var splash = document.getElementById('splash-screen');
+    if (!splash) {
+      document.documentElement.classList.add('is-revealed');
+      document.body.classList.remove('splash-active');
+      return;
+    }
+    var dismissed = false;
+    var timer = null;
+
+    function enterPortfolio() {
+      if (dismissed) return;
+      dismissed = true;
+      if (timer) clearTimeout(timer);
+      // Dispara la cascada fade-in-up del resto de la UI mientras el fondo funde.
+      // El titular del Hero es opaco a los ~800ms (delay 200ms + 600ms).
+      document.documentElement.classList.add('is-revealed');
+      splash.classList.add('is-leaving');
+      setTimeout(function () {
+        splash.classList.add('is-gone'); // swap invisible, texto siempre presente
+      }, 850);
+      setTimeout(function () {
+        splash.classList.add('is-hidden');
+        document.body.classList.remove('splash-active'); // rehabilita el scroll
+      }, 900);
+    }
+
+    document.body.classList.add('splash-active');
+    timer = setTimeout(enterPortfolio, 1200);
+    splash.addEventListener('click', enterPortfolio);
+    splash.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        e.preventDefault();
+        enterPortfolio();
+      }
+    });
+  })();
+</script>

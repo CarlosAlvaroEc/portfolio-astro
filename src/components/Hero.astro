@@ -1,0 +1,29 @@
+---
+// Hero.astro — Hero Centrado Simétrico (Opción 1): composición central de
+// 1 columna. El titular coincide con el lockup del splash (mismas clases).
+---
+
+<section id="hero" class="flex min-h-[80vh] flex-1 flex-col items-center justify-center border-b border-line px-4 py-10 text-center">
+  <div id="hero-content" class="relative flex w-full flex-col items-center text-center">
+    <h1 id="hero-title" data-reveal="fade" style="--reveal-delay:100ms" class="font-sans text-5xl font-black lowercase leading-none tracking-tight text-ink md:text-7xl">
+      code<span class="text-signal">'</span>m up
+    </h1>
+
+    <p data-reveal="rise" style="--reveal-delay:200ms" class="mt-3 font-mono text-sm font-bold text-ink md:text-base">
+      CARLOS ALVARO // INGENIERO DE SOFTWARE &amp; DESARROLLADOR WEB
+    </p>
+
+    <p data-reveal="rise" style="--reveal-delay:300ms" class="mt-4 max-w-2xl text-xs leading-relaxed text-meta md:text-sm">
+      Estudiante de Ingeniería de Software enfocado en el desarrollo web moderno, interfaces funcionales y arquitecturas limpias. Enfoque riguroso en la resolución práctica de problemas, rendimiento y experiencia de usuario.
+    </p>
+
+    <div data-reveal="rise" style="--reveal-delay:400ms" class="mt-6 flex flex-wrap justify-center gap-3">
+      <a href="#patents" class="rounded-sm border border-ink bg-ink px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-canvas transition-colors hover:border-signal hover:bg-signal hover:text-black">
+        [ EXPLORAR PROYECTOS ]
+      </a>
+      <a href="#terminal" class="rounded-sm border border-line bg-transparent px-5 py-3 font-mono text-xs font-medium uppercase tracking-wider text-ink transition-colors hover:border-signal">
+        [ CONEXIÓN TERMINAL ]
+      </a>
+    </div>
+  </div>
+</section>

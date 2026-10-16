@@ -1,0 +1,71 @@
+---
+// Projects.astro — sección del proyecto SoftFlora: flujo simplificado y
+// tabla de especificaciones técnicas.
+---
+
+<section id="patents">
+  <div data-reveal="rise" style="--reveal-delay:650ms" class="flex flex-wrap items-end justify-between gap-2.5 border-b border-line px-0 pb-4 pt-8">
+    <div>
+      <span data-scramble class="mb-2 block font-mono text-xs font-medium uppercase tracking-wider text-meta">// Sección 02 — Proyecto principal</span>
+      <h2 data-scramble class="font-sans text-3xl font-bold tracking-[-0.04em] text-ink">Proyecto desarrollado</h2>
+    </div>
+    <div class="font-mono text-xs uppercase text-meta">1 de 1 proyecto real</div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-0 py-6">
+    <article class="flex max-w-[900px] flex-col border border-line bg-surface">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-canvas px-4 py-2.5 font-mono text-xs font-medium uppercase">
+        <span data-scramble class="text-meta">FIG. 01 — SOFTFLORA // CATÁLOGO WEB &amp; PANEL ADMIN</span>
+        <span class="inline-block rounded-sm border border-signal bg-transparent px-2.5 py-1 text-xs font-medium text-signal">
+          EN PRODUCCIÓN / DESPLEGADO
+        </span>
+      </div>
+      <div class="flex flex-col p-6">
+        <h3 data-scramble class="mb-2.5 font-sans text-2xl font-bold tracking-[-0.04em] text-ink">
+          Softflora // Catálogo web y panel administrativo
+        </h3>
+        <p class="mb-5 text-sm leading-relaxed text-meta">
+          Plataforma web para floristería diseñada mobile-first. Cuenta con un catálogo visual con filtros por ocasión, generación automática de pedidos directamente a WhatsApp, y un panel administrativo protegido con login para actualizar precios, cambiar la disponibilidad de los arreglos y subir fotos.
+        </p>
+        <div class="mb-5 flex flex-wrap items-center gap-2.5 border border-line bg-canvas p-3 font-mono text-xs font-medium uppercase text-ink">
+          <span>Catálogo Web (Next.js)</span>
+          <span class="text-meta">──&gt;</span>
+          <span>Base de Datos (Supabase)</span>
+          <span class="text-meta">──&gt;</span>
+          <span>Pedido directo a WhatsApp</span>
+        </div>
+        <table class="mt-auto w-full border-collapse font-mono text-xs">
+          <tr>
+            <th class="w-[32%] border border-line bg-canvas p-2 px-3 text-left font-medium uppercase text-meta">Frontend</th>
+            <td class="border border-line p-2 px-3 font-medium text-ink">Next.js, React, Tailwind CSS, TypeScript</td>
+          </tr>
+          <tr>
+            <th class="border border-line bg-canvas p-2 px-3 text-left font-medium uppercase text-meta">Base de datos &amp; Auth</th>
+            <td class="border border-line p-2 px-3 font-medium text-ink">Supabase (PostgreSQL, Storage, Autenticación)</td>
+          </tr>
+          <tr>
+            <th class="border border-line bg-canvas p-2 px-3 text-left font-medium uppercase text-meta">Pedidos</th>
+            <td class="border border-line p-2 px-3 font-medium text-ink">Integración con WhatsApp para envío de órdenes</td>
+          </tr>
+          <tr>
+            <th class="border border-line bg-canvas p-2 px-3 text-left font-medium uppercase text-meta">Panel admin</th>
+            <td class="border border-line p-2 px-3 font-medium text-ink">Control de stock, edición de precios y subida de imágenes</td>
+          </tr>
+          <tr>
+            <th class="border border-line bg-canvas p-2 px-3 text-left font-medium uppercase text-meta">Enlaces</th>
+            <td class="border border-line p-2 px-3 font-medium text-ink">
+              <a href="https://github.com/CarlosAlvaroEc" target="_blank" rel="noopener noreferrer" class="font-bold text-ink underline underline-offset-[3px] transition-colors hover:text-signal">Repositorio en GitHub</a>
+              &middot;
+              <a href="https://softflora.netlify.app/" target="_blank" rel="noopener noreferrer" class="font-bold text-ink underline underline-offset-[3px] transition-colors hover:text-signal">Despliegue en Netlify</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </article>
+  </div>
+</section>
+
+<script>
+  import { initScramble } from '../utils/scramble';
+  initScramble();
+</script>
